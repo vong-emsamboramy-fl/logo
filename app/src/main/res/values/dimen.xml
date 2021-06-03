@@ -5,10 +5,14 @@
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_32">32dp</dimen>
 
     <dimen name="headline_image_width">125dp</dimen>
     <dimen name="headline_image_height">110dp</dimen>
+
+    <dimen name="round_button_width">46dp</dimen>
+    <dimen name="round_button_height">46dp</dimen>
 
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_medium">16sp</dimen>

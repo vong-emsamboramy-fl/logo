@@ -12,4 +12,5 @@
     <color name="colorSecondary">#939DAE</color>
     <color name="colorTextPrimary">#1E1F21</color>
     <color name="colorBackgroundGrey">#E5E5E5</color>
+    <color name="colorLightGrey">#F7F7F7</color>
 </resources>

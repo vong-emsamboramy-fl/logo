@@ -5,7 +5,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackgroundGrey">
+        android:background="@color/colorBackgroundGrey"
+        android:elevation="@dimen/dp_2">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
