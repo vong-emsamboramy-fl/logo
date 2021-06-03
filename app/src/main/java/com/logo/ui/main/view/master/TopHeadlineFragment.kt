@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.logo.R
+import com.logo.data.model.headline.Article
+import com.logo.data.model.headline.ArticleSource
 import com.logo.databinding.FragmentTopHeadlinesBinding
 import com.logo.ui.base.BaseFragment
 import com.logo.ui.main.adapter.HeadlineAdapter
@@ -39,6 +41,8 @@ class TopHeadlineFragment : BaseFragment<FragmentTopHeadlinesBinding>() {
                 Status.SUCCESS -> {
                     dismissProgress()
                     it.data?.let { mainData ->
+                        // header data
+                        adapter.add(Article("", "", "", "", "", "", ArticleSource("", "")))
                         adapter.add(mainData.articles)
                     }
                 }
