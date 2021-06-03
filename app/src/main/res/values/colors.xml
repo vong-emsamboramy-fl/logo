@@ -10,4 +10,6 @@
 
     <color name="colorPrimary">#F68F54</color>
     <color name="colorSecondary">#939DAE</color>
+    <color name="colorTextPrimary">#1E1F21</color>
+    <color name="colorBackgroundGrey">#E5E5E5</color>
 </resources>

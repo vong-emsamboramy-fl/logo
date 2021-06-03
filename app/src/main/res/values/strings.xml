@@ -6,4 +6,10 @@
     <string name="search">Search</string>
     <string name="profile">Profile</string>
     <string name="more">More</string>
+    <string name="headline_image">Headline Image</string>
+
+
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="process_failed">Process failed</string>
 </resources>

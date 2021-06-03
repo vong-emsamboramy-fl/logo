@@ -24,7 +24,11 @@ abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
     protected lateinit var binding: T
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         initProgressDialog()
         binding = DataBindingUtil.inflate(inflater, layoutResource, container, false)
         return binding.root
@@ -53,5 +57,15 @@ abstract class BaseFragment<T : ViewDataBinding> : Fragment() {
 
     fun dismissProgress() {
         progressDialog.dismiss()
+    }
+
+    fun showErrorDialog() {
+        val alertDialog = AlertDialog.Builder(requireContext())
+        alertDialog
+            .setTitle(getString(R.string.error))
+            .setMessage(getString(R.string.process_failed))
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 }

@@ -4,7 +4,7 @@ object ApiConstants {
 
     const val BASE_URL = "https://gnews.io/api/"
 
-    private const val VERSION = "/v4"
+    private const val VERSION = "v4"
 
     const val API_TOKEN = "4420f0d083dd46553e8e7acf2e4a4221"
 
