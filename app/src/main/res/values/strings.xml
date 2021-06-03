@@ -12,4 +12,12 @@
     <string name="error">Error</string>
     <string name="ok">OK</string>
     <string name="process_failed">Process failed</string>
+    <string name="filter">Filter</string>
+    <string name="date">Date</string>
+    <string name="clear">Clear</string>
+    <string name="search_in">Search in</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="content">Content</string>
+    <string name="apply">Apply</string>
 </resources>
