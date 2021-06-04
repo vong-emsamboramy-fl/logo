@@ -20,4 +20,6 @@
     <string name="description">Description</string>
     <string name="content">Content</string>
     <string name="apply">Apply</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>
