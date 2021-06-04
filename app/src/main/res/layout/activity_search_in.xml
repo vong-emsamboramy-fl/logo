@@ -23,31 +23,37 @@
                     android:layout_height="46dp"
                     android:src="@drawable/ic_logo"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/text_view_clear"
+                    app:layout_constraintEnd_toStartOf="@id/layout_clear"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/text_view_clear"
+                <LinearLayout
+                    android:id="@+id/layout_clear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:text="@string/clear"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_medium"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/image_view_delete"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/image_view_delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_outline_delete_24"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/text_view_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:gravity="center"
+                        android:text="@string/clear"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_size_medium" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_outline_delete_24"
+                        android:backgroundTint="@color/colorPrimary" />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,6 +150,7 @@
                 app:layout_constraintTop_toTopOf="@id/text_view_content" />
 
             <Button
+                android:id="@+id/button_apply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_rounded_corner_primary"

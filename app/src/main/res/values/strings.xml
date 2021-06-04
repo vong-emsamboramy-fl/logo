@@ -22,4 +22,7 @@
     <string name="apply">Apply</string>
     <string name="from">From</string>
     <string name="to">To</string>
+
+    <string name="all">All</string>
+    <string name="none">None</string>
 </resources>

@@ -37,8 +37,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         binding.imageViewFilter.setOnClickListener {
             filterResult.launch(Intent(requireContext(), FilterActivity::class.java))
         }
-        binding.imageViewSort.setOnClickListener {
-            sortResult.launch(Intent(requireContext(), SearchInActivity::class.java))
-        }
+//        binding.imageViewSort.setOnClickListener {
+//            sortResult.launch(Intent(requireContext(), SearchInActivity::class.java))
+//        }
     }
 }

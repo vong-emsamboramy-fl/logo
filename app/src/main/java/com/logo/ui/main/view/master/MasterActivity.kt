@@ -6,9 +6,14 @@ import android.os.Bundle
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
 import com.logo.R
+import com.logo.data.model.headline.SearchPlace
+import com.logo.data.model.headline.SearchPlaceList
 import com.logo.databinding.ActivityMasterBinding
 import com.logo.ui.base.BaseActivity
+import com.logo.utils.PreferencesManager
+import com.logo.utils.SharePreferenceKey
 
 
 class MasterActivity : BaseActivity<ActivityMasterBinding>() {
@@ -22,10 +27,28 @@ class MasterActivity : BaseActivity<ActivityMasterBinding>() {
         }
     }
 
+    private val preference by lazy {
+        PreferencesManager.instantiate(this)
+    }
+
     override var layoutResource: Int = R.layout.activity_master
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (preference.get(SharePreferenceKey.SEARCH_IN) == null) {
+            preference.store(
+                SharePreferenceKey.SEARCH_IN, Gson().toJson(
+                    SearchPlaceList(
+                        arrayListOf(
+                            SearchPlace("title", true),
+                            SearchPlace("description", true),
+                            SearchPlace("content", true)
+                        )
+                    )
+                )
+            )
+        }
+
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)

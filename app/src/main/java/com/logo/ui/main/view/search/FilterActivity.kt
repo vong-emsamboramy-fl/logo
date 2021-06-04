@@ -2,15 +2,15 @@ package com.logo.ui.main.view.search
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.widget.doOnTextChanged
+import com.google.gson.Gson
 import com.logo.R
+import com.logo.data.model.headline.SearchPlaceList
 import com.logo.databinding.ActivityFilterBinding
 import com.logo.ui.base.BaseActivity
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.selects.select
+import com.logo.utils.PreferencesManager
+import com.logo.utils.SharePreferenceKey
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,8 +28,14 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
         SimpleDateFormat(datePattern)
     }
 
+    private val preference by lazy {
+        PreferencesManager.instantiate(this)
+    }
+
     private var selectedFromDate: Date? = null
     private var selectedToDate: Date? = null
+
+    private var searchPlace: SearchPlaceList? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +43,48 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
         initListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        searchPlace = Gson().fromJson(
+            preference.get(SharePreferenceKey.SEARCH_IN),
+            SearchPlaceList::class.java
+        )
+        when {
+            searchPlace?.list?.all { it.isSelected } == true -> {
+                binding.textViewSearchStatus.text = getString(R.string.all)
+            }
+            searchPlace?.list?.none { it.isSelected } == true -> {
+                binding.textViewSearchStatus.text = getString(R.string.none)
+            }
+            else -> {
+                val choiceList = searchPlace?.list?.filter { it.isSelected }
+                choiceList?.let {
+                    binding.textViewSearchStatus.text = it.fold("", { acc, next ->
+                        if (acc.isEmpty()) {
+                            "$acc ${next.tile}"
+                        } else {
+                            "$acc, ${next.tile}"
+                        }
+                    })
+                }
+            }
+        }
+    }
+
     private fun initListener() {
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
         binding.editTextFrom.setOnClickListener {
             openDateFromPicker()
         }
 
         binding.editTextTo.setOnClickListener {
             openDateToPicker()
+        }
+        binding.layoutSearchIn.setOnClickListener {
+            startActivity(Intent(this, SearchInActivity::class.java))
         }
     }
 
