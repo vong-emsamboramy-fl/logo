@@ -6,5 +6,5 @@ data class SearchPlaceList(
 
 data class SearchPlace(
     val tile: String,
-    val isSelected: Boolean = false
+    var isSelected: Boolean = false
 )

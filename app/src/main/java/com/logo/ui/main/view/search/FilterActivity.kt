@@ -1,9 +1,12 @@
 package com.logo.ui.main.view.search
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.gson.Gson
 import com.logo.R
 import com.logo.data.model.headline.SearchPlaceList
@@ -11,6 +14,7 @@ import com.logo.databinding.ActivityFilterBinding
 import com.logo.ui.base.BaseActivity
 import com.logo.utils.PreferencesManager
 import com.logo.utils.SharePreferenceKey
+import com.logo.utils.constants.IntentKey
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,6 +36,17 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
         PreferencesManager.instantiate(this)
     }
 
+    private val searchPlaceResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.let {
+                    searchPlace = Gson().fromJson(
+                        it.getStringExtra(IntentKey.SEARCH_PLACE),
+                        SearchPlaceList::class.java
+                    )
+                }
+            }
+        }
     private var selectedFromDate: Date? = null
     private var selectedToDate: Date? = null
 
@@ -40,34 +55,67 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initData()
         initListener()
     }
 
     override fun onResume() {
         super.onResume()
+        setUpData()
+    }
+
+    private fun initData() {
         searchPlace = Gson().fromJson(
             preference.get(SharePreferenceKey.SEARCH_IN),
             SearchPlaceList::class.java
         )
-        when {
-            searchPlace?.list?.all { it.isSelected } == true -> {
-                binding.textViewSearchStatus.text = getString(R.string.all)
-            }
-            searchPlace?.list?.none { it.isSelected } == true -> {
-                binding.textViewSearchStatus.text = getString(R.string.none)
-            }
-            else -> {
-                val choiceList = searchPlace?.list?.filter { it.isSelected }
-                choiceList?.let {
-                    binding.textViewSearchStatus.text = it.fold("", { acc, next ->
-                        if (acc.isEmpty()) {
-                            "$acc ${next.tile}"
-                        } else {
-                            "$acc, ${next.tile}"
-                        }
-                    })
+    }
+
+    private fun setUpData() {
+        setSearchPlace()
+        setFilterFromDate()
+        setFilterToDate()
+    }
+
+    private fun setSearchPlace() {
+        if (searchPlace == null) {
+            binding.textViewSearchStatus.text = getString(R.string.none)
+        }
+        searchPlace?.let { searchList ->
+            when {
+                searchList.list.all { it.isSelected } -> {
+                    binding.textViewSearchStatus.text = getString(R.string.all)
+                }
+                searchList.list.none { it.isSelected } -> {
+                    binding.textViewSearchStatus.text = getString(R.string.none)
+                }
+                else -> {
+                    val choiceList = searchList.list.filter { it.isSelected }
+                    choiceList.let {
+                        binding.textViewSearchStatus.text = it.fold("", { acc, next ->
+                            if (acc.isEmpty()) {
+                                "$acc ${next.tile}"
+                            } else {
+                                "$acc, ${next.tile}"
+                            }
+                        })
+                    }
                 }
             }
+        }
+    }
+
+    private fun setFilterFromDate() {
+        selectedFromDate = preference.get(SharePreferenceKey.FILTER_FROM_DATE, Date::class.java)
+        selectedFromDate?.let {
+            binding.editTextFrom.setText(dateFormatter.format(it))
+        }
+    }
+
+    private fun setFilterToDate() {
+        selectedToDate = preference.get(SharePreferenceKey.FILTER_TO_DATE, Date::class.java)
+        selectedToDate?.let {
+            binding.editTextTo.setText(dateFormatter.format(it))
         }
     }
 
@@ -84,8 +132,30 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
             openDateToPicker()
         }
         binding.layoutSearchIn.setOnClickListener {
-            startActivity(Intent(this, SearchInActivity::class.java))
+            searchPlaceResult.launch(Intent(this, SearchInActivity::class.java).apply {
+                putExtra(IntentKey.SEARCH_PLACE, Gson().toJson(searchPlace))
+            })
         }
+        binding.buttonApply.setOnClickListener {
+            preference.store(SharePreferenceKey.FILTER_FROM_DATE, Gson().toJson(selectedFromDate))
+            preference.store(SharePreferenceKey.FILTER_TO_DATE, Gson().toJson(selectedToDate))
+            onBackPressed()
+        }
+        binding.layoutClear.setOnClickListener {
+            selectedFromDate = null
+            selectedToDate = null
+            searchPlace = null
+            binding.editTextFrom.setText("")
+            binding.editTextTo.setText("")
+            binding.textViewSearchStatus.text = getString(R.string.none)
+            clearStoredData()
+        }
+    }
+
+    private fun clearStoredData() {
+        preference.remove(SharePreferenceKey.FILTER_FROM_DATE)
+        preference.remove(SharePreferenceKey.FILTER_TO_DATE)
+        preference.remove(SharePreferenceKey.SEARCH_IN)
     }
 
     private fun openDateFromPicker() {

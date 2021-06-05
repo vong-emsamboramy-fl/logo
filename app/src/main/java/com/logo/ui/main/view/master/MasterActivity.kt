@@ -35,22 +35,7 @@ class MasterActivity : BaseActivity<ActivityMasterBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (preference.get(SharePreferenceKey.SEARCH_IN) == null) {
-            preference.store(
-                SharePreferenceKey.SEARCH_IN, Gson().toJson(
-                    SearchPlaceList(
-                        arrayListOf(
-                            SearchPlace("title", true),
-                            SearchPlace("description", true),
-                            SearchPlace("content", true)
-                        )
-                    )
-                )
-            )
-        }
-
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
     }
 }
