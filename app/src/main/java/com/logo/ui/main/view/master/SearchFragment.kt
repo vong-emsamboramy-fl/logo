@@ -3,21 +3,34 @@ package com.logo.ui.main.view.master
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
+import android.widget.Toast
+import androidx.databinding.adapters.SearchViewBindingAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.logo.R
+import com.logo.data.model.headline.Article
+import com.logo.data.model.headline.ArticleSource
 import com.logo.data.model.headline.SearchPlaceList
+import com.logo.data.model.search.SearchModel
 import com.logo.data.model.search.SortQuery
 import com.logo.databinding.FragmentSearchBinding
 import com.logo.ui.base.BaseFragment
 import com.logo.ui.main.view.search.FilterActivity
 import com.logo.ui.main.view.search.SortBottomSheet
 import com.logo.ui.main.view.search.SortBottomSheetListener
+import com.logo.ui.main.viewModel.TopHeadlineViewModel
 import com.logo.utils.PreferencesManager
 import com.logo.utils.SharePreferenceKey
+import com.logo.utils.Status
 import java.util.*
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     override val layoutResource = R.layout.fragment_search
+
+    private val viewModel: TopHeadlineViewModel by lazy {
+        ViewModelProvider(this).get(TopHeadlineViewModel::class.java)
+    }
 
     private val preference by lazy {
         PreferencesManager.instantiate(requireContext())
@@ -31,8 +44,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
     private val bottomSheetSort = SortBottomSheet(bottomSheetListener)
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
         initListener()
     }
 
@@ -41,7 +56,70 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         setUpFilterAmount()
     }
 
+    private fun observeViewModel() {
+        viewModel.observeSearch.observe(requireActivity()) {
+            when (it.status) {
+                Status.LOADING -> {
+                    showProgress()
+                }
+                Status.SUCCESS -> {
+                    dismissProgress()
+                    it.data?.let { mainData ->
+                        print(mainData)
+                    }
+                }
+                Status.ERROR -> {
+                    dismissProgress()
+                    showErrorDialog()
+                }
+            }
+        }
+    }
+
     private fun initListener() {
+        binding.searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener,
+                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let {
+                        val gson = Gson()
+                        val searchPlaceList = gson.fromJson(
+                            preference.get(SharePreferenceKey.SEARCH_IN),
+                            SearchPlaceList::class.java
+                        )
+                        val dateFrom = gson.fromJson(
+                            preference.get(SharePreferenceKey.FILTER_FROM_DATE),
+                            Date::class.java
+                        )
+                        val dateTo = gson.fromJson(
+                            preference.get(SharePreferenceKey.FILTER_TO_DATE),
+                            Date::class.java
+                        )
+                        val sortBy = gson.fromJson(
+                            preference.get(SharePreferenceKey.SORT_QUERY),
+                            SortQuery::class.java
+                        )
+                        sortBy?.let {
+                            viewModel.search(
+                                SearchModel(
+                                    query,
+                                    searchPlaceList,
+                                    dateFrom,
+                                    dateTo,
+                                    it
+                                )
+                            )
+                        }
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    return true
+                }
+            }
+        )
+
         binding.imageViewFilter.setOnClickListener {
             startActivity(Intent(requireContext(), FilterActivity::class.java))
         }

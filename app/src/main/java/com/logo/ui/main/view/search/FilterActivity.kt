@@ -24,10 +24,6 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
     override var layoutResource = R.layout.activity_filter
 
     private val datePattern = "yyyy/MM/dd"
-    private val serverFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    private val serverFormatter by lazy {
-        SimpleDateFormat(serverFormat)
-    }
     private val dateFormatter by lazy {
         SimpleDateFormat(datePattern)
     }

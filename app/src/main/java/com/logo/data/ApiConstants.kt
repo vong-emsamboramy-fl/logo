@@ -12,6 +12,12 @@ object ApiConstants {
     const val MAX = "max"
 
     const val TOP_HEADLINES = "$VERSION/top-headlines"
+    const val SEARCH = "$VERSION/search"
 
+    const val SEARCH_QUERY = "q"
+    const val SEARCH_PLACE = "in"
+    const val SEARCH_DATE_FROM = "from"
+    const val SEARCH_DATE_TO = "to"
+    const val SORT_BY = "sortby"
 
 }
