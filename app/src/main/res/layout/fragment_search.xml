@@ -44,18 +44,18 @@
                     android:id="@+id/image_view_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/background_round_grey"
-                    android:src="@drawable/ic_sort"
+                    android:background="@drawable/background_selector_sort"
+                    android:src="@drawable/background_selctor_sort_icon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/text_view_filter_amount"
                     android:layout_width="15dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_filter_amount"
                     android:gravity="center"
                     android:padding="@dimen/dp_1"
-                    android:id="@+id/text_view_filter_amount"
                     android:paddingHorizontal="@dimen/dp_2"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_extra_small"

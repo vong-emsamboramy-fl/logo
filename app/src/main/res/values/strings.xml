@@ -26,4 +26,7 @@
     <string name="all">All</string>
     <string name="none">None</string>
     <string name="apply_filter">Apply filter</string>
+    <string name="sort_by">Sort by</string>
+    <string name="uploaded_date">Uploaded date</string>
+    <string name="relevance">Relevance</string>
 </resources>

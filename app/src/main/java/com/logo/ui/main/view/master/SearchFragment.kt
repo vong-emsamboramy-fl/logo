@@ -1,20 +1,19 @@
 package com.logo.ui.main.view.master
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import com.google.gson.Gson
 import com.logo.R
 import com.logo.data.model.headline.SearchPlaceList
+import com.logo.data.model.search.SortQuery
 import com.logo.databinding.FragmentSearchBinding
 import com.logo.ui.base.BaseFragment
 import com.logo.ui.main.view.search.FilterActivity
+import com.logo.ui.main.view.search.SortBottomSheet
+import com.logo.ui.main.view.search.SortBottomSheetListener
 import com.logo.utils.PreferencesManager
 import com.logo.utils.SharePreferenceKey
-import com.logo.utils.constants.IntentKey
 import java.util.*
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
@@ -24,25 +23,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         PreferencesManager.instantiate(requireContext())
     }
 
-    private val filterResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-//                result.data?.let {
-//                    it.getStringExtra(IntentKey.SEARCH_PLACE)
-//                }
-            }
+    private val bottomSheetListener = object : SortBottomSheetListener {
+        override fun onBottomSheetDismissed(sortQuery: SortQuery) {
+            binding.imageViewSort.isActivated = false
+            preference.store(SharePreferenceKey.SORT_QUERY, Gson().toJson(sortQuery))
         }
-
-    private val sortResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val intent = result.data
-            }
-        }
+    }
+    private val bottomSheetSort = SortBottomSheet(bottomSheetListener)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initListener()
     }
 
@@ -53,7 +43,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
     private fun initListener() {
         binding.imageViewFilter.setOnClickListener {
-            filterResult.launch(Intent(requireContext(), FilterActivity::class.java))
+            startActivity(Intent(requireContext(), FilterActivity::class.java))
+        }
+        binding.imageViewSort.setOnClickListener {
+            binding.imageViewSort.isActivated = true
+            val sortQuery = Gson().fromJson(
+                preference.get(SharePreferenceKey.SORT_QUERY),
+                SortQuery::class.java
+            )
+            if (sortQuery == null) {
+                bottomSheetSort.setQuery(SortQuery.UPLOADED_DATE)
+            } else {
+                bottomSheetSort.setQuery(sortQuery)
+            }
+            bottomSheetSort.show(childFragmentManager, "sort")
         }
     }
 

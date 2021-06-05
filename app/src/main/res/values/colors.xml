@@ -15,4 +15,5 @@
     <color name="colorLightGrey">#F7F7F7</color>
     <color name="colorSacoGrey">#939DAE</color>
     <color name="colorRed">#FF5B6F</color>
+    <color name="colorSacoBorder">#F2F2F2</color>
 </resources>
