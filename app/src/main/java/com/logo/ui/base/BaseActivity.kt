@@ -44,4 +44,13 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
             it.setCancelable(false)
         }
     }
+
+
+    fun showProgress() {
+        progressDialog.show()
+    }
+
+    fun dismissProgress() {
+        progressDialog.dismiss()
+    }
 }

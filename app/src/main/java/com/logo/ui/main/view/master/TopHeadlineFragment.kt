@@ -42,7 +42,17 @@ class TopHeadlineFragment : BaseFragment<FragmentTopHeadlinesBinding>() {
                     dismissProgress()
                     it.data?.let { mainData ->
                         // header data
-                        adapter.add(Article("", "", "", "", "", "", ArticleSource("", "")))
+                        adapter.add(
+                            Article(
+                                getString(R.string.news),
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                ArticleSource("", "")
+                            )
+                        )
                         adapter.add(mainData.articles)
                     }
                 }

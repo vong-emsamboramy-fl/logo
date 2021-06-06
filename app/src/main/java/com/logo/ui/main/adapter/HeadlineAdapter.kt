@@ -1,5 +1,6 @@
 package com.logo.ui.main.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,9 @@ import com.logo.data.model.headline.Article
 import com.logo.databinding.ItemHeadlineBinding
 import com.logo.databinding.ItemHeadlineHeaderBinding
 import com.logo.ui.base.BaseAdapter
+import com.logo.ui.main.view.NewsDetailActivity
+import com.logo.utils.SharePreferenceKey
+import com.logo.utils.constants.IntentKey
 import retrofit2.http.Header
 
 class HeadlineAdapter : BaseAdapter<Article>() {
@@ -29,8 +33,13 @@ class HeadlineAdapter : BaseAdapter<Article>() {
     }
 
     override fun onBindItemHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ArticleViewHolder) {
-            holder.bind(items[position])
+        when (holder) {
+            is ArticleViewHolder -> {
+                holder.bind(items[position])
+            }
+            is HeaderViewHolder -> {
+                holder.bind(items[position])
+            }
         }
     }
 
@@ -51,9 +60,18 @@ class HeadlineAdapter : BaseAdapter<Article>() {
                 .into(binding.imageView)
             binding.textViewHeadlineTitle.text = article.title
             binding.textViewArticleDescription.text = article.description
+            binding.root.setOnClickListener {
+                it.context.startActivity(Intent(it.context, NewsDetailActivity::class.java).apply {
+                    putExtra(IntentKey.WEB_URL, article.url)
+                })
+            }
         }
     }
 
     private inner class HeaderViewHolder(private val binding: ItemHeadlineHeaderBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(article: Article) {
+            binding.textView.text = article.title
+        }
+    }
 }

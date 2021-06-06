@@ -135,6 +135,7 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
         binding.buttonApply.setOnClickListener {
             preference.store(SharePreferenceKey.FILTER_FROM_DATE, Gson().toJson(selectedFromDate))
             preference.store(SharePreferenceKey.FILTER_TO_DATE, Gson().toJson(selectedToDate))
+            preference.store(SharePreferenceKey.SEARCH_IN, Gson().toJson(searchPlace))
             onBackPressed()
         }
         binding.layoutClear.setOnClickListener {

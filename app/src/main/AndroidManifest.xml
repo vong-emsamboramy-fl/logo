@@ -29,6 +29,9 @@
         <activity
             android:name=".ui.main.view.search.SearchInActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.main.view.NewsDetailActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

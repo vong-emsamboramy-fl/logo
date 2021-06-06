@@ -16,6 +16,7 @@ import com.logo.data.model.search.SearchModel
 import com.logo.data.model.search.SortQuery
 import com.logo.databinding.FragmentSearchBinding
 import com.logo.ui.base.BaseFragment
+import com.logo.ui.main.adapter.HeadlineAdapter
 import com.logo.ui.main.view.search.FilterActivity
 import com.logo.ui.main.view.search.SortBottomSheet
 import com.logo.ui.main.view.search.SortBottomSheetListener
@@ -44,11 +45,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
     private val bottomSheetSort = SortBottomSheet(bottomSheetListener)
 
+    private val adapter = HeadlineAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         initListener()
+        initView()
+    }
+
+    private fun initView() {
+        binding.recyclerView.adapter = adapter
     }
 
     override fun onResume() {
@@ -65,7 +72,19 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 Status.SUCCESS -> {
                     dismissProgress()
                     it.data?.let { mainData ->
-                        print(mainData)
+                        // header data
+                        adapter.set(
+                            Article(
+                                "${mainData.totalArticles} ${getString(R.string.news)}",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                ArticleSource("", "")
+                            )
+                        )
+                        adapter.add(mainData.articles)
                     }
                 }
                 Status.ERROR -> {

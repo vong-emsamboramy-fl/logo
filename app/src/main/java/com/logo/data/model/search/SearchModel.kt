@@ -19,10 +19,14 @@ data class SearchModel(
                 return ""
             }
             return place.list.fold("", { acc, next ->
-                if (acc.isEmpty()) {
-                    "$acc ${next.tile}"
+                if (!next.isSelected) {
+                    acc
                 } else {
-                    "$acc,${next.tile}"
+                    if (acc.isEmpty()) {
+                        "$acc ${next.tile}"
+                    } else {
+                        "$acc,${next.tile}"
+                    }
                 }
             })
         }
@@ -37,7 +41,7 @@ data class SearchModel(
 
     val dateToText: String
         get() {
-            if(dateTo == null) {
+            if (dateTo == null) {
                 return ""
             }
             return serverFormatter.format(dateTo)
