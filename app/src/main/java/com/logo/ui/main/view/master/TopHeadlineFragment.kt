@@ -36,10 +36,14 @@ class TopHeadlineFragment : BaseFragment<FragmentTopHeadlinesBinding>() {
         viewModel.observeTopHeadlines.observe(requireActivity()) {
             when (it.status) {
                 Status.LOADING -> {
-                    showProgress()
+                    binding.textViewNews.visibility = View.VISIBLE
+                    binding.shimmerLayout.visibility = View.VISIBLE
+                    binding.shimmerLayout.startShimmer()
                 }
                 Status.SUCCESS -> {
-                    dismissProgress()
+                    binding.textViewNews.visibility = View.GONE
+                    binding.shimmerLayout.visibility = View.GONE
+                    binding.shimmerLayout.stopShimmer()
                     it.data?.let { mainData ->
                         // header data
                         adapter.add(
@@ -57,7 +61,9 @@ class TopHeadlineFragment : BaseFragment<FragmentTopHeadlinesBinding>() {
                     }
                 }
                 Status.ERROR -> {
-                    dismissProgress()
+                    binding.textViewNews.visibility = View.GONE
+                    binding.shimmerLayout.visibility = View.GONE
+                    binding.shimmerLayout.stopShimmer()
                     showErrorDialog()
                 }
             }

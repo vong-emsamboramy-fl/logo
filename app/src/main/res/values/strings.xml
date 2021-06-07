@@ -29,4 +29,6 @@
     <string name="sort_by">Sort by</string>
     <string name="uploaded_date">Uploaded date</string>
     <string name="relevance">Relevance</string>
+
+    <string name="search_history">Search History</string>
 </resources>

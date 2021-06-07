@@ -4,19 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
-import androidx.databinding.adapters.SearchViewBindingAdapter
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.logo.R
 import com.logo.data.model.headline.Article
 import com.logo.data.model.headline.ArticleSource
 import com.logo.data.model.headline.SearchPlaceList
+import com.logo.data.model.search.SearchHistory
 import com.logo.data.model.search.SearchModel
 import com.logo.data.model.search.SortQuery
 import com.logo.databinding.FragmentSearchBinding
 import com.logo.ui.base.BaseFragment
 import com.logo.ui.main.adapter.HeadlineAdapter
+import com.logo.ui.main.adapter.SearchHistoryAdapter
+import com.logo.ui.main.adapter.SearchHistoryListener
 import com.logo.ui.main.view.search.FilterActivity
 import com.logo.ui.main.view.search.SortBottomSheet
 import com.logo.ui.main.view.search.SortBottomSheetListener
@@ -47,6 +48,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
     private val adapter = HeadlineAdapter()
 
+    private val searchHistoryListener = object : SearchHistoryListener {
+        override fun onItemClick(searchHistory: SearchHistory) {
+            binding.searchView.setQuery(searchHistory.text, true)
+        }
+    }
+    private val historyAdapter = SearchHistoryAdapter(searchHistoryListener)
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
@@ -55,7 +64,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
     private fun initView() {
-        binding.recyclerView.adapter = adapter
+        binding.recyclerViewResult.adapter = adapter
+        binding.reyclerViewHistory.adapter = historyAdapter
     }
 
     override fun onResume() {
@@ -67,10 +77,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         viewModel.observeSearch.observe(requireActivity()) {
             when (it.status) {
                 Status.LOADING -> {
-                    showProgress()
+                    binding.shimmerLayout.visibility = View.VISIBLE
+                    binding.shimmerLayout.startShimmer()
                 }
                 Status.SUCCESS -> {
-                    dismissProgress()
                     it.data?.let { mainData ->
                         // header data
                         adapter.set(
@@ -85,13 +95,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                             )
                         )
                         adapter.add(mainData.articles)
+                        binding.shimmerLayout.visibility = View.GONE
+                        binding.shimmerLayout.stopShimmer()
                     }
                 }
                 Status.ERROR -> {
-                    dismissProgress()
+                    binding.shimmerLayout.visibility = View.GONE
+                    binding.shimmerLayout.stopShimmer()
                     showErrorDialog()
                 }
             }
+        }
+
+        viewModel.searchHistorys.observe(requireActivity()) {
+            historyAdapter.set(it)
         }
     }
 
@@ -129,11 +146,23 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                                 )
                             )
                         }
+                        if (historyAdapter.getItems().none { it.text == query }) {
+                            cacheSearch(SearchHistory(0, query))
+                        }
                     }
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
+                    if (newText.trim().isEmpty()) {
+                        binding.reyclerViewHistory.visibility = View.VISIBLE
+                        binding.recyclerViewResult.visibility = View.GONE
+                        adapter.clear()
+                        return true
+                    } else {
+                        binding.reyclerViewHistory.visibility = View.GONE
+                        binding.recyclerViewResult.visibility = View.VISIBLE
+                    }
                     return true
                 }
             }
@@ -174,5 +203,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         } else {
             binding.textViewFilterAmount.visibility = View.GONE
         }
+    }
+
+    private fun cacheSearch(search: SearchHistory) {
+        viewModel.addSearchHistory(search)
     }
 }

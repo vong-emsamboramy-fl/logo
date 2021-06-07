@@ -1,25 +1,41 @@
 package com.logo.ui.main.viewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
 import com.logo.data.model.headline.TopHeadline
+import com.logo.data.model.search.SearchHistory
+import com.logo.data.model.search.SearchHistoryDao
+import com.logo.data.model.search.SearchHistoryDatabase
 import com.logo.data.model.search.SearchModel
 import com.logo.data.repository.HeadlineRepository
+import com.logo.data.repository.SearchHistoryRepository
 import com.logo.utils.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TopHeadlineViewModel : ViewModel() {
+class TopHeadlineViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = HeadlineRepository()
+    private val searchRepo: SearchHistoryRepository
 
     private val postTopHeadlines: MutableLiveData<Resource<TopHeadline>> = MutableLiveData()
     val observeTopHeadlines: LiveData<Resource<TopHeadline>> = postTopHeadlines
 
     private val postSearch: MutableLiveData<Resource<TopHeadline>> = MutableLiveData()
     val observeSearch: LiveData<Resource<TopHeadline>> = postSearch
+
+    val searchHistorys: LiveData<List<SearchHistory>>
+
+    init {
+
+        val searchDao = SearchHistoryDatabase.getDatabase(application).searchHistoryDao()
+        searchRepo = SearchHistoryRepository(searchDao)
+        searchHistorys = searchRepo.allData
+    }
+
 
     fun getTopHeadlines() {
         postTopHeadlines.postValue(Resource.loading(null))
@@ -50,6 +66,12 @@ class TopHeadlineViewModel : ViewModel() {
                 postSearch.postValue(Resource.error(t.message, null))
             }
         })
+    }
+
+    fun addSearchHistory(searchHistory: SearchHistory) {
+        viewModelScope.launch(Dispatchers.IO) {
+            searchRepo.addSearchHistory(searchHistory)
+        }
     }
 
 }
