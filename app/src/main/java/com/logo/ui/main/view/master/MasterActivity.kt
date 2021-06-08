@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.logo.R
 import com.logo.data.model.headline.SearchPlace
 import com.logo.data.model.headline.SearchPlaceList
+import com.logo.data.model.search.SortQuery
 import com.logo.databinding.ActivityMasterBinding
 import com.logo.ui.base.BaseActivity
 import com.logo.utils.PreferencesManager
@@ -35,7 +36,19 @@ class MasterActivity : BaseActivity<ActivityMasterBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initData()
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
+    }
+
+    private fun initData() {
+        val sortBy = Gson().fromJson(
+            preference.get(SharePreferenceKey.SORT_QUERY),
+            SortQuery::class.java
+        )
+
+        if (sortBy == null) {
+            preference.store(SharePreferenceKey.SORT_QUERY, SortQuery.UPLOADED_DATE)
+        }
     }
 }

@@ -85,7 +85,7 @@ class TopHeadlineFragment : BaseFragment<FragmentTopHeadlinesBinding>() {
             adapter.add(
                 Article(
                     0,
-                    getString(R.string.news),
+                    "News",
                     "",
                     "",
                     "",

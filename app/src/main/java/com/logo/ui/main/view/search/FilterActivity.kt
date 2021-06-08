@@ -53,6 +53,8 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
         super.onCreate(savedInstanceState)
         initData()
         initListener()
+        setFilterFromDate()
+        setFilterToDate()
     }
 
     override fun onResume() {
@@ -69,8 +71,6 @@ class FilterActivity : BaseActivity<ActivityFilterBinding>() {
 
     private fun setUpData() {
         setSearchPlace()
-        setFilterFromDate()
-        setFilterToDate()
     }
 
     private fun setSearchPlace() {

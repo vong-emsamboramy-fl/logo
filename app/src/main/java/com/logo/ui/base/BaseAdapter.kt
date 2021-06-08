@@ -9,38 +9,8 @@ abstract class BaseAdapter<T>(
     protected var items: ArrayList<T> = arrayListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var hasMoreRecord = true
-
-    var isLoading = false
-
-    var recyclerView: RecyclerView? = null
-
-    protected var itemClickHandler: ((position: Int, dataItem: T) -> Unit)? = null
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView
-        super.onAttachedToRecyclerView(recyclerView)
-    }
-
-    fun addLoadMoreAction(action: () -> Unit) {
-        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val lastVisibleItem: Int =
-                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                if (!isLoading && lastVisibleItem > itemCount - 5 && hasMoreRecord) {     // action will call when scroll to last 5 items.
-                    action.invoke()
-                }
-            }
-        })
-    }
-
     fun getItems(): List<T> {
         return items
-    }
-
-    open fun setOnItemClick(action: (position: Int, dataItem: T) -> Unit) {
-        this.itemClickHandler = action
     }
 
     open fun set(data: T) {
@@ -68,11 +38,6 @@ abstract class BaseAdapter<T>(
     open fun update(position: Int, data: T) {
         this.items[position] = data
         notifyItemChanged(position)
-    }
-
-    open fun update(item: T) {
-        val position = items.indexOf(item)
-        update(position, item)
     }
 
     open fun remove(position: Int) {

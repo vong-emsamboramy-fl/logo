@@ -49,6 +49,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
     private val searchHistoryListener = object : SearchHistoryListener {
         override fun onItemClick(searchHistory: SearchHistory) {
+            binding.searchView.requestFocus()
             binding.searchView.setQuery(searchHistory.text, true)
         }
     }
@@ -107,7 +108,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         }
 
         viewModel.searchHistorys.observe(requireActivity()) {
-            historyAdapter.set(it)
+            historyAdapter.clear()
+            historyAdapter.add(SearchHistory(0, "header"))
+            historyAdapter.add(it)
         }
     }
 
