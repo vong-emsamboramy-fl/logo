@@ -8,16 +8,24 @@
         android:background="@color/colorBackgroundGrey"
         android:paddingHorizontal="@dimen/dp_10">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
+            android:id="@+id/refresh_layout"
             android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_32"
-            android:paddingBottom="@dimen/dp_15"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/dp_32"
+                android:paddingBottom="@dimen/dp_15"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/text_view_news"

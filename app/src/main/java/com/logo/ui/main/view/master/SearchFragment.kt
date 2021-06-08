@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.logo.R
 import com.logo.data.model.headline.Article
-import com.logo.data.model.headline.ArticleSource
 import com.logo.data.model.headline.SearchPlaceList
 import com.logo.data.model.search.SearchHistory
 import com.logo.data.model.search.SearchModel
@@ -85,13 +84,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                         // header data
                         adapter.set(
                             Article(
+                                0,
                                 "${mainData.totalArticles} ${getString(R.string.news)}",
                                 "",
                                 "",
                                 "",
                                 "",
-                                "",
-                                ArticleSource("", "")
+                                ""
                             )
                         )
                         adapter.add(mainData.articles)

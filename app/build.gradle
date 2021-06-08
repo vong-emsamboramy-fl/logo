@@ -79,6 +79,8 @@ dependencies {
     // Shimmer layout
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
+    // Swipe refresh layout
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Room components
     implementation "androidx.room:room-runtime:2.3.0"

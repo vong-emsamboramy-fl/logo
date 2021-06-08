@@ -2,6 +2,8 @@ package com.logo.ui.main.viewModel
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.logo.data.model.headline.Article
+import com.logo.data.model.headline.ArticleDatabase
 import com.logo.data.model.headline.TopHeadline
 import com.logo.data.model.search.SearchHistory
 import com.logo.data.model.search.SearchHistoryDao
@@ -18,7 +20,7 @@ import retrofit2.Response
 
 class TopHeadlineViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo = HeadlineRepository()
+    private val repo: HeadlineRepository
     private val searchRepo: SearchHistoryRepository
 
     private val postTopHeadlines: MutableLiveData<Resource<TopHeadline>> = MutableLiveData()
@@ -28,12 +30,17 @@ class TopHeadlineViewModel(application: Application) : AndroidViewModel(applicat
     val observeSearch: LiveData<Resource<TopHeadline>> = postSearch
 
     val searchHistorys: LiveData<List<SearchHistory>>
+    val articleList: LiveData<List<Article>>
 
     init {
-
         val searchDao = SearchHistoryDatabase.getDatabase(application).searchHistoryDao()
         searchRepo = SearchHistoryRepository(searchDao)
         searchHistorys = searchRepo.allData
+
+        val articleDao = ArticleDatabase.getDatabase(application).articleDao()
+        repo = HeadlineRepository(articleDao)
+        articleList = repo.allData
+
     }
 
 
@@ -71,6 +78,18 @@ class TopHeadlineViewModel(application: Application) : AndroidViewModel(applicat
     fun addSearchHistory(searchHistory: SearchHistory) {
         viewModelScope.launch(Dispatchers.IO) {
             searchRepo.addSearchHistory(searchHistory)
+        }
+    }
+
+    fun addArticle(articleList: List<Article>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.addArticleList(articleList)
+        }
+    }
+
+    fun deleteAllArticles() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteAllArticles()
         }
     }
 
